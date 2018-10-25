@@ -3,7 +3,7 @@ import { Header, Image } from 'semantic-ui-react'
 
 const Account = () => (
   <Header as="h2" textAlign="center">
-    <Image src="/ftlogo.png" />
+    <Image src="/logo.png" />
     <p>Account</p>
   </Header>
 )

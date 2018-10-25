@@ -3,7 +3,7 @@ import { Header, Image } from 'semantic-ui-react'
 
 const NotFound = () => (
   <Header as="h2" textAlign="center">
-    <Image src="/ftlogo.png" />
+    <Image src="/logo.png" />
     <p>Page not found</p>
   </Header>
 )

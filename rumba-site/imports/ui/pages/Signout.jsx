@@ -6,7 +6,7 @@ const Signout = () => {
   Meteor.logout()
   return (
     <Header as="h2" textAlign="center">
-      <Image src="/ftlogo.png" />
+      <Image src="/logo.png" />
       <p>Signout</p>
     </Header>
   )
