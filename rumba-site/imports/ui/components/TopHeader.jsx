@@ -3,34 +3,30 @@ import PropTypes from 'prop-types'
 import { Meteor } from 'meteor/meteor'
 import { withTracker } from 'meteor/react-meteor-data'
 import { withRouter, NavLink } from 'react-router-dom'
-import { Menu, Dropdown } from 'semantic-ui-react'
+import { Menu, Dropdown, Image } from 'semantic-ui-react'
 
 const TopHeader = ({ currentUser }) => (
   <Menu secondary pointing>
     <Menu.Item as={NavLink} activeClassName="active" exact to="/">
-      Home
+      <Image src="/icon.png" size="tiny" />
     </Menu.Item>
-    // <Menu.Item as={NavLink} activeClassName="active" exact to="/example">
-    //   Example
-    // </Menu.Item>
-    // <Menu.Item as={NavLink} activeClassName="active" exact to="/signin">
-    //   Sign In
-    // </Menu.Item>
-    // <Menu.Item as={NavLink} activeClassName="active" exact to="/signup">
-    //   Sign Up
-    // </Menu.Item>
-    // <Menu.Item as={NavLink} activeClassName="active" exact to="/bad-url">
-    //   Not Found Page
-    // </Menu.Item>
+    {currentUser === '' && (
+    <Menu.Item as={NavLink} activeClassName="active" exact to="/signin">
+    Sign In
+    </Menu.Item>
+    )}
+    {currentUser === '' && (
+    <Menu.Item as={NavLink} activeClassName="active" exact to="/signup">
+    Sign Up
+    </Menu.Item>
+    )}
+    {currentUser !== '' && (
+    <Menu.Item as={NavLink} activeClassName="active" exact to="/example">
+    Example
+    </Menu.Item>
+    )}
     <Menu.Item position="right">
-      {currentUser === '' ? (
-        <Dropdown text="Sign In" pointing="top right" icon="user">
-          <Dropdown.Menu>
-            <Dropdown.Item icon="user" text="Sign In" as={NavLink} exact to="/signin" />
-            <Dropdown.Item icon="add user" text="Sign Up" as={NavLink} exact to="/signup" />
-          </Dropdown.Menu>
-        </Dropdown>
-      ) : (
+      {currentUser !== '' && (
         <Dropdown text={currentUser} pointing="top right" icon="user">
           <Dropdown.Menu>
             <Dropdown.Item icon="user" text="Account" as={NavLink} exact to="/account" />

@@ -4,7 +4,7 @@ import { Header, Image } from 'semantic-ui-react'
 const NotFound = () => (
   <Header as="h2" textAlign="center">
     <Image src="/logo.png" />
-    <p>Page not found</p>
+    <h1>404 Page not found</h1>
   </Header>
 )
 
