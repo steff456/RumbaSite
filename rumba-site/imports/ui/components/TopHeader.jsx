@@ -10,21 +10,21 @@ const TopHeader = ({ currentUser }) => (
     <Menu.Item as={NavLink} activeClassName="active" exact to="/">
       Home
     </Menu.Item>
-    <Menu.Item as={NavLink} activeClassName="active" exact to="/example">
-      Example
-    </Menu.Item>
-    <Menu.Item as={NavLink} activeClassName="active" exact to="/signin">
-      Sign In
-    </Menu.Item>
-    <Menu.Item as={NavLink} activeClassName="active" exact to="/signup">
-      Sign Up
-    </Menu.Item>
-    <Menu.Item as={NavLink} activeClassName="active" exact to="/bad-url">
-      Not Found Page
-    </Menu.Item>
+    // <Menu.Item as={NavLink} activeClassName="active" exact to="/example">
+    //   Example
+    // </Menu.Item>
+    // <Menu.Item as={NavLink} activeClassName="active" exact to="/signin">
+    //   Sign In
+    // </Menu.Item>
+    // <Menu.Item as={NavLink} activeClassName="active" exact to="/signup">
+    //   Sign Up
+    // </Menu.Item>
+    // <Menu.Item as={NavLink} activeClassName="active" exact to="/bad-url">
+    //   Not Found Page
+    // </Menu.Item>
     <Menu.Item position="right">
       {currentUser === '' ? (
-        <Dropdown text="Please Sign In" pointing="top right" icon="user">
+        <Dropdown text="Sign In" pointing="top right" icon="user">
           <Dropdown.Menu>
             <Dropdown.Item icon="user" text="Sign In" as={NavLink} exact to="/signin" />
             <Dropdown.Item icon="add user" text="Sign Up" as={NavLink} exact to="/signup" />
