@@ -6,13 +6,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
-import { Accounts } from 'meteor/accounts-base'
+import { Accounts } from 'meteor/accounts-base';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 const options=[
   { key: 'c', text: 'Client', value: 'client' },
   { key: 'o', text: 'Owner', value: 'owner' }
 ]
-export default class Signup extends React.Component {
+class Signup extends React.Component {
   constructor(props) {
     super(props)
     this.state = { email: '', password: '', error: '' }
@@ -29,13 +31,14 @@ export default class Signup extends React.Component {
   handleSubmit() {
     const { email, password, role } = this.state
 
-    Accounts.createUser({ email, username: email, password }, (err) => {
+    Accounts.createUser({ email, username: email, password, roles: [role] }, (err) => {
       if (err) {
         this.setState({ error: err.reason })
       } else {
         // browserHistory.push('/login');
       }
     })
+    console.log(this.props.currentUser)
   }
 
   render() {
@@ -90,3 +93,9 @@ export default class Signup extends React.Component {
     )
   }
 }
+
+export default withTracker(() => {
+  return {
+    currentUser: Meteor.user(),
+  };
+})(Signup);

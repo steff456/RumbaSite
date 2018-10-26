@@ -5,8 +5,8 @@ import PropTypes from 'prop-types'
 import { Link, Redirect } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
 import { Container, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
-
-export default class Signin extends React.Component {
+import { withTracker } from 'meteor/react-meteor-data';
+class Signin extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -38,6 +38,7 @@ export default class Signin extends React.Component {
         })
       }
     })
+    console.log(this.props.currentUser)
   }
 
   render() {
@@ -92,3 +93,9 @@ export default class Signin extends React.Component {
 }
 
 Signin.propTypes = { location: PropTypes.object.isRequired }
+
+export default withTracker(() => {
+  return {
+    currentUser: Meteor.user(),
+  };
+})(Signin);

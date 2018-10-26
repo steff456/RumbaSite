@@ -1,6 +1,8 @@
 import React from 'react'
 import { Image, Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 const MainGridRow = styled(Grid.Row)`
   padding: 0;
@@ -26,4 +28,8 @@ const Home = () => (
   </Grid>
 );
 
-export default Home
+export default withTracker(() => {
+  return {
+    currentUser: Meteor.user(),
+  };
+})(Home);
