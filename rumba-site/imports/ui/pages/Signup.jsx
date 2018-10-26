@@ -8,6 +8,10 @@ import { Link } from 'react-router-dom'
 import { Container, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 import { Accounts } from 'meteor/accounts-base'
 
+const options=[
+  { key: 'c', text: 'Client', value: 'client' },
+  { key: 'o', text: 'Owner', value: 'owner' }
+]
 export default class Signup extends React.Component {
   constructor(props) {
     super(props)
@@ -23,7 +27,7 @@ export default class Signup extends React.Component {
   }
 
   handleSubmit() {
-    const { email, password } = this.state
+    const { email, password, role } = this.state
 
     Accounts.createUser({ email, username: email, password }, (err) => {
       if (err) {
@@ -53,6 +57,7 @@ export default class Signup extends React.Component {
                   type="email"
                   placeholder="E-mail address"
                   onChange={this.handleChange}
+                  required
                 />
                 <Form.Input
                   label="Password"
@@ -61,6 +66,15 @@ export default class Signup extends React.Component {
                   name="password"
                   placeholder="Password"
                   type="password"
+                  onChange={this.handleChange}
+                  required
+                />
+                <Form.Select
+                  label="Type"
+                  options={options}
+                  placeholder="Client"
+                  required
+                  name="role"
                   onChange={this.handleChange}
                 />
                 <Form.Button content="Submit" />
