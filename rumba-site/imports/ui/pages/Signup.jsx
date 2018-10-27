@@ -10,6 +10,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 
+
 const options=[
   { key: 'c', text: 'Client', value: 'client' },
   { key: 'o', text: 'Owner', value: 'owner' }
@@ -29,7 +30,7 @@ class Signup extends React.Component {
   }
 
   handleSubmit() {
-    const { email, password, role } = this.state
+    const { email, password, role } = this.state;
 
     Accounts.createUser({ email, username: email, password, roles: [role] }, (err) => {
       if (err) {
@@ -37,8 +38,7 @@ class Signup extends React.Component {
       } else {
         // browserHistory.push('/login');
       }
-    })
-    console.log(this.props.currentUser)
+    });
   }
 
   render() {

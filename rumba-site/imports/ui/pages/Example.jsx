@@ -4,18 +4,16 @@ import { Roles } from 'meteor/alanning:roles'
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 
-const role = Roles.userIsInRole(Meteor.user(), ['client'])
-
-
 class Example extends React.Component {
   render(){
+    const role = Roles.userIsInRole(Meteor.user(), ['client'])
     console.log(this.props.currentUser)
+    console.log(role)
     return(
       <Header as="h2" textAlign="center">
         <Image src="/logo.png" />
         <p>Example</p>
         <p>(Only visible when logged in.)</p>
-        <p>--{Meteor.userId()}--</p>
       </Header>
     );
   }
