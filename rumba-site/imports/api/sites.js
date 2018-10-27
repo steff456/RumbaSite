@@ -4,6 +4,7 @@ export const Sites = new Mongo.Collection('sites');
 
 if (Meteor.isServer) {
     Meteor.publish('sites', () => Sites.find({}));
+    Meteor.publish('sites-admin', () => Sites.find({owner: Meteor.user().username}));
 }
 
 Meteor.methods({

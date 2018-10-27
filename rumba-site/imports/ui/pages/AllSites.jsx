@@ -9,7 +9,6 @@ import { withTracker } from 'meteor/react-meteor-data';
 const role = Roles.userIsInRole(Meteor.user(), ['client'])
 
 const Modal = ({ handleClose, handleAdd, show, children, disabledB }) => {
-
   return (
     <div className={show ? "modal display-block" : "modal display-none"}>
       <section className="modal-main">
@@ -97,7 +96,7 @@ class AllSites extends React.Component {
     if (comments.length === 0) {
       return (<div className="error2"><h3>¡Ups! There are not comments yet</h3></div>)
     }
-    return comments.map((g, i) => (
+    return comments.reverse().map((g, i) => (
       <div className="comment" key={i}>
         <h4>{g.user} :</h4> {g.comment}
       </div>

@@ -21,8 +21,8 @@ const TopHeader = ({ currentUser, currentRole }) => (
     </Menu.Item>
     )}
     {currentUser !== '' && currentRole === 'owner' && (
-    <Menu.Item as={NavLink} activeClassName="active" exact to="/example">
-    Example
+    <Menu.Item as={NavLink} activeClassName="active" exact to="/sites-admin">
+    Your sites
     </Menu.Item>    
     )}
     {currentUser !== '' && currentRole === 'client' && (
