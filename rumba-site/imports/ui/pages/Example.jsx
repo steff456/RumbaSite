@@ -4,8 +4,6 @@ import { Roles } from 'meteor/alanning:roles'
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 
-
-
 class Example extends React.Component {
   render(){
     const role = Roles.userIsInRole(Meteor.user(), ['client'])

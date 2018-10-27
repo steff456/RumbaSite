@@ -38,7 +38,10 @@ class Signin extends React.Component {
         })
       }
     })
-    console.log(this.props.currentUser)
+    const { redirectToReferer } = this.state
+    if (redirectToReferer) {
+      return <Redirect to={from} />
+    }
   }
 
   render() {
