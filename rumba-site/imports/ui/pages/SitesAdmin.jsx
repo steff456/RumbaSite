@@ -6,15 +6,57 @@ import { Sites } from '../../api/sites.js'
 import PropTypes from 'prop-types';
 import ReactStars from 'react-stars'
 
+const Modal = ({ handleClose, ok, show, children }) => {
+  return (
+    <div className={show ? "modal display-block" : "modal display-none"}>
+      <section className="modal-main">
+        {children}
+        <button onClick={ok}>Ok</button>
+        <button onClick={handleClose}>Cancel</button>
+      </section>
+    </div>
+  );
+};
+
+
 class SitesAdmin extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    this.state={
-      search:''
+    this.state = {
+      search: '',
+      showSite: null,
+      showDelete: false
     }
+
+    this.showModalDelete = this.showModalDelete.bind(this);
+    this.hideModalDelete = this.hideModalDelete.bind(this);
+    this.showOneSite = this.showOneSite.bind(this);
+    this.delete  = this.delete.bind(this);
   }
+
+  showModalDelete = () => {
+    this.setState({ showDelete: true });
+  };
+
+  hideModalDelete = () => {
+    this.setState({ showDelete: false });
+  };
+
+  delete() {
+    Meteor.call('sites.delete', this.state.showSite, (err, site) => {
+      if (err) {
+        alert(err);
+        return;
+      }      
+    });
+
+    this.setState({
+      showSite: null
+    });
+  }
+
   renderSites() {
     let filteredSites = this.props.sites.filter(
       (site) => {
@@ -51,21 +93,98 @@ class SitesAdmin extends React.Component {
     });
   }
 
+  renderComments(comments) {
+    if (comments.length === 0) {
+      return (<div className="error2"><h3>¡Ups! There are not comments yet</h3></div>)
+    }
+    return comments.reverse().map((g, i) => (
+      <div className="comment" key={i}>
+        <h4>{g.user} :</h4> {g.comment}
+      </div>
+    ));
+  }
+
+  renderSite() {
+    let filteredSite = this.props.sites.filter(
+      (site) => {
+        return site._id._str === this.state.showSite;
+      }
+    );
+
+    if (filteredSite.length === 0) {
+      this.setState({
+        showSite: null,
+      });
+      return (<div></div>)
+    }
+
+    return filteredSite.map((g, i) => (
+      <div key={i}>
+        <div className="card-detail-img">
+        </div>
+        <div className="card-detail">
+          <div className="other-sites" onClick={() => this.showOneSite(null)}>
+            Other sites
+            </div>
+          <div className="card-detail-header">
+            <h1>{g.name}</h1>
+            <h3>{g.address}</h3>
+            <ReactStars
+              className="card-starts"
+              count={5}
+              size={20}
+              edit={false}
+              value={g.raiting}
+              color2={'#ffd700'} />
+          </div>
+          <div className="card-detail-comments">
+            {this.renderComments(g.comments)}
+          </div>
+
+          <div className="admin-buttons">
+            <Modal show={this.state.showDelete} handleClose={this.hideModalDelete} ok={this.delete}>
+              <p className="padding-text">Are you sure, you want to delete this site?</p>
+            </Modal>
+            <div className="delete" onClick={this.showModalDelete}>
+              Delete
+            </div>
+            <div className="add-comment edit">
+              Edit
+            </div>
+          </div>
+        </div>
+      </div>
+    ));
+  }
+
+  showOneSite(id) {
+    if (id !== null) {
+      id = id._str;
+    }
+    this.setState({
+      showSite: id,
+    });
+  }
+
   render() {
-    const role = Roles.userIsInRole(Meteor.user(), ['client'])
-    console.log(this.props.currentUser)
-    console.log(role)
     return (
       <div>
-        <div className="search-bar">
-          <input type="text"
-            value={this.state.search}
-            onChange={this.updateSearch.bind(this)}
-            placeholder="Search site" />
-        </div>
-        <div className="cards">
-          {this.renderSites()}
-        </div>
+        {this.state.showSite !== null ?
+          (<div>
+            {this.renderSite()}
+          </div>) :
+          (<div>
+            <div className="search-bar">
+              <input type="text"
+                value={this.state.search}
+                onChange={this.updateSearch.bind(this)}
+                placeholder="Search site" />
+            </div>
+            <div className="cards">
+              {this.renderSites()}
+            </div>
+          </div>)
+        }
       </div>
     );
   }
