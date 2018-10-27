@@ -2,25 +2,19 @@ import React from 'react';
 import { Sites } from '../../api/sites.js'
 import PropTypes from 'prop-types';
 import ReactStars from 'react-stars'
-import { Header, Image } from 'semantic-ui-react'
 import { Roles } from 'meteor/alanning:roles'
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 
 const role = Roles.userIsInRole(Meteor.user(), ['client'])
 
-const Modal = ({ handleClose, handleAdd, show, raiting}) => {
+const Modal = ({ handleClose, handleAdd, show, children, disabledB }) => {
+
   return (
     <div className={show ? "modal display-block" : "modal display-none"}>
       <section className="modal-main">
-        <textarea></textarea>
-        <ReactStars
-          className="card-starts"
-          count={5}
-          size={30}
-          value={raiting}
-          color2={'#ffd700'} />
-        <button onClick={handleAdd} disabled={true}>Add</button>
+        {children}
+        <button onClick={handleAdd} disabled={disabledB == ""}>Add</button>
         <button onClick={handleClose}>Close</button>
       </section>
     </div>
@@ -33,10 +27,16 @@ class AllSites extends React.Component {
     this.state = {
       showSite: null,
       search: '',
-      show: false
+      show: false,
+      comment:'',
+      commentRaiting: 0
     }
+    this.starsRef = React.createRef();
+
     this.showOneSite = this.showOneSite.bind(this);
     this.showModal = this.showModal.bind(this);
+    this.changeRat = this.changeRat.bind(this);
+    this.handleChangeTextArea = this.handleChangeTextArea.bind(this);
     this.addComment = this.addComment.bind(this);
   }
 
@@ -49,7 +49,6 @@ class AllSites extends React.Component {
   };
 
   renderSites() {
-    console.log(this.props.sites)
     let filteredSites = this.props.sites.filter(
       (site) => {
         return site.name.toLowerCase().indexOf(
@@ -104,6 +103,7 @@ class AllSites extends React.Component {
       </div>
     ));
   }
+
   renderSite() {
     let filteredSite = this.props.sites.filter(
       (site) => {
@@ -141,9 +141,20 @@ class AllSites extends React.Component {
             {this.renderComments(g.comments)}
           </div>
           <Modal show={this.state.show}
-           handleClose={this.hideModal}
-           handleAdd={this.addComment}
-           raiting={g.raiting}>
+            handleClose={this.hideModal}
+            handleAdd={this.addComment}
+            disabledB={this.state.comment}>
+            <textarea autoFocus value={this.state.comment} onChange={this.handleChangeTextArea}></textarea>
+            <ReactStars
+              id = "stars"
+              className="card-starts"
+              count={5}
+              size={30}
+              color2={'#ffd700'}
+              ref={this.starsRef} 
+              onChange={this.changeRat}
+              value={this.state.commentRaiting}
+              />
           </Modal>
           <div className="add-comment" onClick={this.showModal}>
             Add comment
@@ -153,8 +164,39 @@ class AllSites extends React.Component {
     ));
   }
 
+  changeRat(val){
+    console.log(val + "===")
+    this.setState({ commentRaiting: val });
+  }
+  handleChangeTextArea(e) {
+    this.setState({comment: e.target.value})
+  }
+
   addComment() {
-    console.log("HOLA")
+    let sites = this.props.sites.filter(
+      (site) => {
+        return site._id._str === this.state.showSite;
+      }
+    );
+    let siteComments = sites[0].comments;
+      
+    let siteRaiting = ((sites[0].raiting * siteComments.length) + this.state.commentRaiting)/(siteComments.length + 1);
+    siteComments.push({
+      user: this.props.currentUser.username,
+      comment: this.state.comment,
+      raiting: this.state.commentRaiting
+    });
+
+    Meteor.call('sites.comment.add', this.state.showSite, siteComments,siteRaiting, (err, site) => {
+      if (err) {
+        alert(err);
+        return;
+      }
+      this.hideModal();
+      this.setState({
+        comment:''
+      });
+    });
   }
 
   render() {
