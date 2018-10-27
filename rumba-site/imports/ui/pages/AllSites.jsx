@@ -13,21 +13,28 @@ class AllSites extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      search : ''
+      showSite: null,
+      search: ''
     }
+    this.showOneSite = this.showOneSite.bind(this);
   }
 
   renderSites() {
     console.log(this.props.sites)
-    let filteredSites= this.props.sites.filter(
-      (site)=>{
+    let filteredSites = this.props.sites.filter(
+      (site) => {
         return site.name.toLowerCase().indexOf(
-          this.state.search.toLowerCase())!== -1;
+          this.state.search.toLowerCase()) !== -1;
       }
     );
 
+    if(filteredSites.length === 0){     
+      return (<div className="error"><h3>¡Ups! There are not results for your search</h3></div>)
+    }
+
+
     return filteredSites.map((g, i) => (
-      <div className="card" key={i}>
+      <div className="card" key={i} onClick={()=>this.showOneSite(g._id)}>
         <img className="card-img" src="http://wac.2f9ad.chicdn.net/802F9AD/u/joyent.wme/public/wme/assets/ec050984-7b81-11e6-96e0-8905cd656caf.jpg" alt="Norway" />
         <div className="card-text">
           <h2>{g.name}</h2>
@@ -49,18 +56,85 @@ class AllSites extends React.Component {
     });
   }
 
+  showOneSite(id){
+    if(id!== null){
+      id = id._str;
+    }
+    this.setState({
+      showSite: id,
+    });
+  }
+
+  renderComments(comments){
+    return comments.map((g, i) => (
+        <div className="comment" key={i}>
+          <h4>{g.user} :</h4> {g.comment}
+        </div>
+    ));
+  }
+  renderSite(){
+      let filteredSite = this.props.sites.filter(
+        (site) => {
+          return site._id._str === this.state.showSite;
+        }
+      );
+
+      if(filteredSite.length === 0){
+        this.setState({
+          showSite: null,
+        });
+        return (<div></div>)
+      }
+  
+      return filteredSite.map((g, i) => (
+        <div key={i}>
+          <div className="card-detail-img">
+          </div>
+          <div className="card-detail">
+            <div className="other-sites" onClick={()=>this.showOneSite(null)}>
+              Other sites
+            </div>
+            <div className="card-detail-header">
+              <h1>{g.name}</h1>
+              <h3>{g.address}</h3>
+              <ReactStars
+                className="card-starts"
+                count={5}
+                size={20}
+                edit={false}
+                value={g.raiting}
+                color2={'#ffd700'} />
+            </div>
+            <div className="card-detail-comments">
+              {this.renderComments(g.comments)}
+            </div>
+            <div className="add-comment">
+                Add comment
+            </div>            
+          </div>                 
+        </div>
+      ));
+  }
+
   render() {
     return (
       <div>
-        <div className="search-bar">
-          <input type="text"
-            value={this.state.search}
-            onChange={this.updateSearch.bind(this)} 
-            placeholder="Search site"/>
-        </div>
-        <div className="cards">
-          {this.renderSites()}
-        </div>
+        {this.state.showSite  !== null ?
+          (<div>
+            {this.renderSite()}
+          </div>) :
+          (<div>
+            <div className="search-bar">
+              <input type="text"
+                value={this.state.search}
+                onChange={this.updateSearch.bind(this)}
+                placeholder="Search site" />
+            </div>
+            <div className="cards">
+              {this.renderSites()}
+            </div>
+          </div>)
+      }
       </div>
     );
   }

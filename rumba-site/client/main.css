@@ -40,3 +40,76 @@ body {
 }
 
 input[type="text"]{font: 15px/24px 'Muli', sans-serif; color: #333; width: 50%; box-sizing: border-box; letter-spacing: 1px;}
+
+.card-detail{  
+  margin-left: 10%;
+  height: 75%;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background: white;
+  position: absolute;
+  top: 150px;
+}
+
+.card-detail-img{
+  background: url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg);
+  max-height: 500px;
+  min-height: 500px;
+  min-width: 100%;
+  background-repeat: round;
+}
+
+.card-detail-header{
+  width: 100%;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.card-detail-header>h3{
+  color:gray;
+}
+
+.other-sites{
+  margin: 20px;
+  font-weight: bold;
+}
+
+.other-sites:hover{
+  color: orange;
+  cursor: pointer;
+}
+
+.error{
+  color:gray;
+  text-align: center;
+}
+
+.comment{
+  margin-top:30px;
+  margin-left: 10%;
+  padding: 20px;
+  width: 80%;
+  background-color: rgba(128, 128, 128, 0.171);
+  border-radius: 10px;
+}
+
+.card-detail-comments{
+  margin: 5%;
+  overflow-y: auto;
+  max-height: 50%;
+}
+
+.add-comment{
+  margin-left: 30%;
+  width: 40%;
+  background-color: orange;
+  color:white;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}
+
+.add-comment:hover{
+  cursor: pointer;
+  background-color: gray;
+}
