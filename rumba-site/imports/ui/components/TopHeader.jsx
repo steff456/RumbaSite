@@ -23,7 +23,12 @@ const TopHeader = ({ currentUser }) => (
     {currentUser !== '' && (
     <Menu.Item as={NavLink} activeClassName="active" exact to="/example">
     Example
-    </Menu.Item>
+    </Menu.Item>    
+    )}
+    {currentUser !== '' && (
+    <Menu.Item as={NavLink} activeClassName="active" exact to="/sites">
+    Sites
+    </Menu.Item>    
     )}
     <Menu.Item position="right">
       {currentUser !== '' && (

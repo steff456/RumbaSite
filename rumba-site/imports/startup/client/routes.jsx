@@ -11,6 +11,7 @@ import 'semantic-ui-css/semantic.css'
 import TopHeader from '../../ui/components/TopHeader.jsx';
 import Home from '../../ui/pages/Home.jsx';
 import Example from '../../ui/pages/Example.jsx';
+import AllSites from '../../ui/pages/AllSites.jsx';
 import Settings from '../../ui/pages/Settings.jsx';
 import Account from '../../ui/pages/Account.jsx';
 import NotFound from '../../ui/pages/NotFound.jsx';
@@ -28,6 +29,7 @@ Meteor.startup(() => {
           <Route path="/signin" component={Signin} />
           <Route path="/signup" component={Signup} />
           <ProtectedRoute path="/example" component={Example} />
+          <ProtectedRoute path="/sites" component={AllSites} />
           <ProtectedRoute path="/account" component={Account} />
           <ProtectedRoute path="/settings" component={Settings} />
           <ProtectedRoute path="/signout" component={Signout} />
