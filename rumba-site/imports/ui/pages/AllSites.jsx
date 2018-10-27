@@ -9,7 +9,6 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 const role = Roles.userIsInRole(Meteor.user(), ['client'])
 
-
 class AllSites extends React.Component {
   constructor(props) {
     super(props);

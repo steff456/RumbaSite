@@ -5,7 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data'
 import { withRouter, NavLink } from 'react-router-dom'
 import { Menu, Dropdown, Image } from 'semantic-ui-react'
 
-const TopHeader = ({ currentUser }) => (
+const TopHeader = ({ currentUser, currentRole }) => (
   <Menu secondary pointing>
     <Menu.Item as={NavLink} activeClassName="active" exact to="/">
       <Image src="/icon.png" size="tiny" />
@@ -20,12 +20,12 @@ const TopHeader = ({ currentUser }) => (
     Sign Up
     </Menu.Item>
     )}
-    {currentUser !== '' && (
+    {currentUser !== '' && currentRole === 'owner' && (
     <Menu.Item as={NavLink} activeClassName="active" exact to="/example">
     Example
     </Menu.Item>    
     )}
-    {currentUser !== '' && (
+    {currentUser !== '' && currentRole === 'client' && (
     <Menu.Item as={NavLink} activeClassName="active" exact to="/sites">
     Sites
     </Menu.Item>    
@@ -44,12 +44,17 @@ const TopHeader = ({ currentUser }) => (
   </Menu>
 )
 
-TopHeader.propTypes = { currentUser: PropTypes.string }
-TopHeader.defaultProps = { currentUser: '' }
+TopHeader.propTypes = { currentUser: PropTypes.string, currentRole: PropTypes.string }
+TopHeader.defaultProps = { currentUser: '', currentRole: ''}
 
 // withRouter HOC.
 // see explanation: https://reacttraining.com/react-router/web/api/withRouter
 
-const TopHeaderContainer = withTracker(() => ({ currentUser: Meteor.user() ? Meteor.user().username : '' }))(TopHeader)
+const TopHeaderContainer = withTracker(() => (
+  { 
+    currentUser: Meteor.user() ? Meteor.user().username : '',
+    currentRole: Meteor.user() ? Meteor.user().roles[0] : ''
+  }
+))(TopHeader)
 
 export default withRouter(TopHeaderContainer)
