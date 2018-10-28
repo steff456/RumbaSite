@@ -27,7 +27,7 @@ class AllSites extends React.Component {
       showSite: null,
       search: '',
       show: false,
-      comment:'',
+      comment: '',
       commentRaiting: 0
     }
     this.starsRef = React.createRef();
@@ -62,7 +62,8 @@ class AllSites extends React.Component {
 
     return filteredSites.map((g, i) => (
       <div className="card" key={i} onClick={() => this.showOneSite(g._id)}>
-        <img className="card-img" src={g.urlImage} alt="Norway" />
+        <img onError={(e) => { e.target.onerror = null; e.target.src = "https://media-cdn.tripadvisor.com/media/photo-s/08/2c/a7/13/cloud-9-sky-bar-lounge.jpg" }}
+          className="card-img" src={g.urlImage} alt="Norway" />
         <div className="card-text">
           <h2>{g.name}</h2>
         </div>
@@ -119,7 +120,7 @@ class AllSites extends React.Component {
 
     return filteredSite.map((g, i) => (
       <div key={i}>
-        <div className="card-detail-img" style={{"background": "url("+g.urlImage+")"}}>
+        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg);" }}>
         </div>
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
@@ -145,15 +146,15 @@ class AllSites extends React.Component {
             disabledB={this.state.comment}>
             <textarea autoFocus value={this.state.comment} onChange={this.handleChangeTextArea}></textarea>
             <ReactStars
-              id = "stars"
+              id="stars"
               className="card-starts"
               count={5}
               size={30}
               color2={'#ffd700'}
-              ref={this.starsRef} 
+              ref={this.starsRef}
               onChange={this.changeRat}
               value={this.state.commentRaiting}
-              />
+            />
           </Modal>
           <div className="add-comment" onClick={this.showModal}>
             Add comment
@@ -163,12 +164,12 @@ class AllSites extends React.Component {
     ));
   }
 
-  changeRat(val){
+  changeRat(val) {
     console.log(val + "===")
     this.setState({ commentRaiting: val });
   }
   handleChangeTextArea(e) {
-    this.setState({comment: e.target.value})
+    this.setState({ comment: e.target.value })
   }
 
   addComment() {
@@ -178,22 +179,22 @@ class AllSites extends React.Component {
       }
     );
     let siteComments = sites[0].comments;
-      
-    let siteRaiting = ((sites[0].raiting * siteComments.length) + this.state.commentRaiting)/(siteComments.length + 1);
+
+    let siteRaiting = ((sites[0].raiting * siteComments.length) + this.state.commentRaiting) / (siteComments.length + 1);
     siteComments.push({
       user: this.props.currentUser.username,
       comment: this.state.comment,
       raiting: this.state.commentRaiting
     });
 
-    Meteor.call('sites.comment.add', this.state.showSite, siteComments,siteRaiting, (err, site) => {
+    Meteor.call('sites.comment.add', this.state.showSite, siteComments, siteRaiting, (err, site) => {
       if (err) {
         alert(err);
         return;
       }
       this.hideModal();
       this.setState({
-        comment:''
+        comment: ''
       });
     });
   }

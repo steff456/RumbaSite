@@ -36,7 +36,6 @@ body {
 }
 
 .card-starts {
-  margin: 10px;
   display: flex;
   justify-content: center;
 }
@@ -55,6 +54,14 @@ input[type="text"]{font: 15px/24px 'Muli', sans-serif; color: #333; width: 50%; 
 
 .card-detail-img{
   background: url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg);
+  max-height: 500px;
+  min-height: 500px;
+  min-width: 100%;
+  background-repeat: round;
+}
+
+.card-detail-img::after, .card-detail-img::before{
+  background-image: url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg);
   max-height: 500px;
   min-height: 500px;
   min-width: 100%;

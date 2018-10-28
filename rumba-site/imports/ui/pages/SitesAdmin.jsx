@@ -135,7 +135,8 @@ class SitesAdmin extends React.Component {
 
     return filteredSites.map((g, i) => (
       <div className="card" key={i} onClick={() => this.showOneSite(g._id)}>
-        <img className="card-img" src={g.urlImage} alt="Norway" />
+        <img onError={(e)=>{e.target.onerror = null; e.target.src="https://media-cdn.tripadvisor.com/media/photo-s/08/2c/a7/13/cloud-9-sky-bar-lounge.jpg"}}
+         className="card-img" src={g.urlImage} alt="Norway" />
         <div className="card-text">
           <h2>{g.name}</h2>
         </div>
@@ -183,7 +184,7 @@ class SitesAdmin extends React.Component {
 
     return filteredSite.map((g, i) => (
       <div key={i}>
-        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + ")" }}>
+        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg);" }}>
         </div>
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
