@@ -194,3 +194,17 @@ span[class^= "react-stars-"]{
 .padding-text{
   padding: 10px;
 }
+
+.edit-element{
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.edit-element-text{
+  width: 40%;
+  margin: 5px;
+}
+
+.edit-element>input{
+  width: 100%;
+}

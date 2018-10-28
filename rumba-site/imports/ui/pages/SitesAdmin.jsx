@@ -27,14 +27,34 @@ class SitesAdmin extends React.Component {
     this.state = {
       search: '',
       showSite: null,
-      showDelete: false
+      showDelete: false,
+      showEdit: false,
+      name:'',
+      address:'',
+      urlImage:'',
+      disableButton:true
     }
 
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
     this.showModalDelete = this.showModalDelete.bind(this);
     this.hideModalDelete = this.hideModalDelete.bind(this);
     this.showOneSite = this.showOneSite.bind(this);
-    this.delete  = this.delete.bind(this);
+    this.delete = this.delete.bind(this);
+    this.update = this.update.bind(this);
+    this.updateName = this.updateName.bind(this);
+    this.updateAddress = this.updateAddress.bind(this);
+    this.updateUrlImage = this.updateUrlImage.bind(this);
+    this.updateState = this.updateState.bind(this);
   }
+
+  showModal = () => {
+    this.setState({ showEdit: true });
+  };
+
+  hideModal = () => {
+    this.setState({ showEdit: false });
+  };
 
   showModalDelete = () => {
     this.setState({ showDelete: true });
@@ -49,12 +69,27 @@ class SitesAdmin extends React.Component {
       if (err) {
         alert(err);
         return;
-      }      
+      }
     });
 
     this.setState({
       showSite: null
     });
+  }
+
+  update() {
+    Meteor.call('sites.update', 
+    this.state.showSite,
+    this.state.name,
+    this.state.address,
+    this.state.urlImage,
+    (err, site) => {
+      if (err) {
+        alert(err);
+        return;
+      }
+    });
+    this.hideModal();
   }
 
   renderSites() {
@@ -66,7 +101,7 @@ class SitesAdmin extends React.Component {
     );
 
     if (filteredSites.length === 0) {
-      return (<div className="error"><h3>¡Ups! There are not results for your search</h3></div>)
+      return (<div className="error"><h3>¡Ups! We couldn't find sites where you are owner</h3></div>)
     }
 
 
@@ -85,6 +120,16 @@ class SitesAdmin extends React.Component {
           color2={'#ffd700'} />
       </div>
     ));
+  }
+
+  updateDisable(){
+    let dis = false;
+    if(this.state.name === '' || this.state.name === ''||this.state.urlImage === ''){
+      dis = true;
+    }
+    this.setState({
+      disableButton: dis
+    });
   }
 
   updateSearch(event) {
@@ -148,13 +193,52 @@ class SitesAdmin extends React.Component {
             <div className="delete" onClick={this.showModalDelete}>
               Delete
             </div>
-            <div className="add-comment edit">
+            <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={this.update}>
+              <p className="padding-text">Edit site</p>
+              <div className="edit-element">
+                <div className="edit-element-text">Name</div>  
+                <input type="text" defaultValue={g.name} onChange={this.updateName}/>
+              </div>
+              <div className="edit-element">
+                <div className="edit-element-text">Address</div>
+                <input type="text" defaultValue={g.address} onChange={this.updateAddress}/>
+              </div>
+              <div className="edit-element">
+                <div className="edit-element-text">URL image</div>
+                <input type="text" defaultValue={g.urlImage} onChange={this.updateUrlImage}/>
+              </div>
+            </Modal>
+            <div className="add-comment edit" onClick={this.showModal}>
               Edit
             </div>
           </div>
         </div>
       </div>
     ));
+  }
+
+  updateState(name, address, urlImage){
+    this.setState({
+      name, address, urlImage
+    });
+  }
+
+  updateName(evt){
+    this.setState({
+      name: evt.target.value
+    });
+  }
+
+  updateAddress(evt){
+    this.setState({
+      address: evt.target.value
+    });
+  }
+
+  updateUrlImage(evt){
+    this.setState({
+      urlImage: evt.target.value
+    });
   }
 
   showOneSite(id) {
