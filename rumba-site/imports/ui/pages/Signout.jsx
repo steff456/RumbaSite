@@ -6,8 +6,8 @@ const Signout = () => {
   Meteor.logout()
   return (
     <Header as="h2" textAlign="center">
-      <Image src="/logo.png" />
-      <p>Signout</p>
+      <Image src="/logo.png" size='massive'/>
+      <p>Hope to see you soon!</p>
     </Header>
   )
 }

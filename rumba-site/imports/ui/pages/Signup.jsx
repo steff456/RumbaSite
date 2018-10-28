@@ -51,7 +51,7 @@ class Signup extends React.Component {
               <Image src="/logo.png" /> Register your account
             </Header>
             <Form onSubmit={this.handleSubmit}>
-              <Segment stacked>
+              <Segment stacked padded='very'>
                 <Form.Input
                   label="Email"
                   icon="user"

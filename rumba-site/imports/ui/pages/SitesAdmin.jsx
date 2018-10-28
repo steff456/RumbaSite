@@ -4,14 +4,18 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Sites } from '../../api/sites.js'
 import PropTypes from 'prop-types';
 import ReactStars from 'react-stars'
+import { Header, Input, Form, Button, Divider } from 'semantic-ui-react';
 
 const Modal = ({ handleClose, ok, show, children }) => {
   return (
     <div className={show ? "modal display-block" : "modal display-none"}>
       <section className="modal-main">
         {children}
-        <button onClick={ok}>Ok</button>
-        <button onClick={handleClose}>Cancel</button>
+        <Form>
+            <Divider />
+            <Button onClick={ok}>Ok</Button>
+            <Button onClick={handleClose}>Cancel</Button>
+        </Form>
       </section>
     </div>
   );
@@ -189,7 +193,7 @@ class SitesAdmin extends React.Component {
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
             Other sites
-            </div>
+          </div>
           <div className="card-detail-header">
             <h1>{g.name}</h1>
             <h3>{g.address}</h3>
@@ -207,25 +211,34 @@ class SitesAdmin extends React.Component {
 
           <div className="admin-buttons">
             <Modal show={this.state.showDelete} handleClose={this.hideModalDelete} ok={this.delete}>
-              <p className="padding-text">Are you sure, you want to delete this site?</p>
+              <Header as='h4' textAlign='center' className="padding-text">Are you sure, you want to delete this site?</Header>
             </Modal>
             <div className="delete" onClick={this.showModalDelete}>
               Delete
             </div>
             <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={this.update}>
-              <p className="padding-text">Edit site</p>
-              <div className="edit-element">
-                <div className="edit-element-text">Name</div>
-                <input type="text" defaultValue={g.name} onChange={this.updateName} />
-              </div>
-              <div className="edit-element">
-                <div className="edit-element-text">Address</div>
-                <input type="text" defaultValue={g.address} onChange={this.updateAddress} />
-              </div>
-              <div className="edit-element">
-                <div className="edit-element-text">URL image</div>
-                <input type="text" defaultValue={g.urlImage} onChange={this.updateUrlImage} />
-              </div>
+              <Header 
+              as='h2' 
+              className="padding-text" 
+              dividing 
+              textAlign='center'
+            > 
+              Edit Site
+            </Header>
+            <Form>
+              <Form.Field className="edit-element">
+                <label>Site Name</label>
+                <Input type="text" defaultValue={g.name} placeholder={g.name} onChange={this.updateName} />
+              </Form.Field>
+              <Form.Field className="edit-element">
+                <label>Site Address</label>
+                <Input type="text" defaultValue={g.address} placeholder={g.address} onChange={this.updateAddress} />
+              </Form.Field>
+              <Form.Field className="edit-element">
+                <label>URL Image</label>
+                <Input type="text" defaultValue={g.urlImage} label="https://" placeholder={g.urlImage} onChange={this.updateUrlImage} />
+              </Form.Field>
+            </Form>
             </Modal>
             <div className="add-comment edit" onClick={this.showModal}>
               Edit
@@ -278,25 +291,34 @@ class SitesAdmin extends React.Component {
           </div>) :
           (<div>
             <div className="search-bar">
-              <input type="text"
+              <Input type="text"
                 value={this.state.search}
                 onChange={this.updateSearch.bind(this)}
                 placeholder="Search site" />
 
               <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={this.create}>
-                <p className="padding-text">New site</p>
-                <div className="edit-element">
-                  <div className="edit-element-text">Name</div>
-                  <input type="text" defaultValue="Name" onChange={this.updateName} />
-                </div>
-                <div className="edit-element">
-                  <div className="edit-element-text">Address</div>
-                  <input type="text" defaultValue="Address" onChange={this.updateAddress} />
-                </div>
-                <div className="edit-element">
-                  <div className="edit-element-text">URL image</div>
-                  <input type="text" defaultValue="https://" onChange={this.updateUrlImage} />
-                </div>
+                <Header 
+                  as='h2' 
+                  className="padding-text" 
+                  dividing 
+                  textAlign='center'
+                > 
+                  New Site
+                </Header>
+                <Form>
+                  <Form.Field className="edit-element">
+                    <label>Site Name</label>
+                    <Input type="text" placeholder="Name" onChange={this.updateName} />
+                  </Form.Field>
+                  <Form.Field className="edit-element">
+                    <label>Site Address</label>
+                    <Input type="text" placeholder="Address" onChange={this.updateAddress} />
+                  </Form.Field>
+                  <Form.Field className="edit-element">
+                    <label>URL Image</label>
+                    <Input type="text" label="https://" placeholder="URL image" onChange={this.updateUrlImage} />
+                  </Form.Field>
+                </Form>
               </Modal>
               <div className="add-comment edit" onClick={this.showModalNew}>
                 Add new site

@@ -34,8 +34,6 @@ const TopHeader = ({ currentUser, currentRole }) => (
       {currentUser !== '' && (
         <Dropdown text={currentUser} pointing="top right" icon="user">
           <Dropdown.Menu>
-            <Dropdown.Item icon="user" text="Account" as={NavLink} exact to="/account" />
-            <Dropdown.Item icon="settings" text="Settings" as={NavLink} exact to="/settings" />
             <Dropdown.Item icon="sign out" text="Sign Out" as={NavLink} exact to="/signout" />
           </Dropdown.Menu>
         </Dropdown>

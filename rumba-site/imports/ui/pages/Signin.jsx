@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link, Redirect } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
-import { Container, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { Container, Form, Grid, Header, Image, Message, Segment, Button } from 'semantic-ui-react'
 import { withTracker } from 'meteor/react-meteor-data';
 class Signin extends React.Component {
   constructor(props) {
@@ -61,8 +61,8 @@ class Signin extends React.Component {
             <Header as="h2" textAlign="center">
               <Image src="/logo.png" /> Log-in to your account
             </Header>
-            <Form onSubmit={this.handleSubmit}>
-              <Segment stacked>
+            <Segment stacked padded='very'>
+              <Form onSubmit={this.handleSubmit}>
                 <Form.Input
                   label="Email"
                   icon="user"
@@ -81,9 +81,9 @@ class Signin extends React.Component {
                   type="password"
                   onChange={this.handleChange}
                 />
-                <Form.Button content="Submit" />
-              </Segment>
-            </Form>
+                <Button content="Submit" />
+              </Form>
+            </Segment>
             <Message>
               <Link to="/signup">Click here to Register</Link>
             </Message>

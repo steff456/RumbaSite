@@ -1,10 +1,11 @@
 import React from 'react';
 import { Sites } from '../../api/sites.js'
 import PropTypes from 'prop-types';
-import ReactStars from 'react-stars'
-import { Roles } from 'meteor/alanning:roles'
+import ReactStars from 'react-stars';
+import { Roles } from 'meteor/alanning:roles';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
+import { Header, Form, Button, Divider, Input } from 'semantic-ui-react';
 
 const role = Roles.userIsInRole(Meteor.user(), ['client'])
 
@@ -13,8 +14,11 @@ const Modal = ({ handleClose, handleAdd, show, children, disabledB }) => {
     <div className={show ? "modal display-block" : "modal display-none"}>
       <section className="modal-main">
         {children}
-        <button onClick={handleAdd} disabled={disabledB == ""}>Add</button>
-        <button onClick={handleClose}>Close</button>
+        <Form>
+          <Divider />
+          <Button onClick={handleAdd} disabled={disabledB == ""}>Add</Button>
+          <Button onClick={handleClose}>Close</Button>
+        </Form>
       </section>
     </div>
   );
@@ -144,17 +148,22 @@ class AllSites extends React.Component {
             handleClose={this.hideModal}
             handleAdd={this.addComment}
             disabledB={this.state.comment}>
-            <textarea autoFocus value={this.state.comment} onChange={this.handleChangeTextArea}></textarea>
-            <ReactStars
-              id="stars"
-              className="card-starts"
-              count={5}
-              size={30}
-              color2={'#ffd700'}
-              ref={this.starsRef}
-              onChange={this.changeRat}
-              value={this.state.commentRaiting}
-            />
+            <Header as='h2' dividing textAlign='center'>
+              Add Comment
+            </Header>
+            <Form>
+              <Form.TextArea placeholder='Tell us your opinion...' autoFocus value={this.state.comment} onChange={this.handleChangeTextArea}></Form.TextArea>
+              <ReactStars
+                id="stars"
+                className="card-starts"
+                count={5}
+                size={20}
+                color2={'#ffd700'}
+                ref={this.starsRef}
+                onChange={this.changeRat}
+                value={this.state.commentRaiting}
+              />
+            </Form>
           </Modal>
           <div className="add-comment" onClick={this.showModal}>
             Add comment
@@ -207,7 +216,7 @@ class AllSites extends React.Component {
           </div>) :
           (<div>
             <div className="search-bar">
-              <input type="text"
+              <Input type="text"
                 value={this.state.search}
                 onChange={this.updateSearch.bind(this)}
                 placeholder="Search site" />
