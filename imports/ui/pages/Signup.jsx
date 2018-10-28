@@ -9,7 +9,11 @@ import { Container, Form, Grid, Header, Image, Message, Segment } from 'semantic
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
+import styled from 'styled-components';
 
+const ErrorMessage = styled(Message)`
+  width: 100% !important;
+`;
 
 const options=[
   { key: 'c', text: 'Client', value: 'client' },
@@ -86,7 +90,7 @@ class Signup extends React.Component {
             <Message>
               Already have an account? Login <Link to="/signin">here</Link>
             </Message>
-            {error === '' ? '' : <Message error header="Registration was not successful" content={error} />}
+            {error === '' ? '' : <ErrorMessage error header="Registration was not successful" content={error} />}
           </Grid.Column>
         </Grid>
       </Container>

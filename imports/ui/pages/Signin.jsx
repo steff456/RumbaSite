@@ -6,6 +6,11 @@ import { Link, Redirect } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
 import { Container, Form, Grid, Header, Image, Message, Segment, Button } from 'semantic-ui-react'
 import { withTracker } from 'meteor/react-meteor-data';
+import styled from 'styled-components';
+
+const ErrorMessage = styled(Message)`
+  width: 100% !important;
+`;
 class Signin extends React.Component {
   constructor(props) {
     super(props)
@@ -87,7 +92,7 @@ class Signin extends React.Component {
             <Message>
               <Link to="/signup">Click here to Register</Link>
             </Message>
-            {error === '' ? '' : <Message error header="Login was not successful" content={error} />}
+            {error === '' ? '' : <ErrorMessage error header="Login was not successful" content={error} />}
           </Grid.Column>
         </Grid>
       </Container>
