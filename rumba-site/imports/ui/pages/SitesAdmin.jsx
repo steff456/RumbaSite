@@ -184,7 +184,7 @@ class SitesAdmin extends React.Component {
 
     return filteredSite.map((g, i) => (
       <div key={i}>
-        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg);" }}>
+        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg)" }}>
         </div>
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
