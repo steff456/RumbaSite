@@ -62,7 +62,7 @@ class AllSites extends React.Component {
 
     return filteredSites.map((g, i) => (
       <div className="card" key={i} onClick={() => this.showOneSite(g._id)}>
-        <img className="card-img" src="http://wac.2f9ad.chicdn.net/802F9AD/u/joyent.wme/public/wme/assets/ec050984-7b81-11e6-96e0-8905cd656caf.jpg" alt="Norway" />
+        <img className="card-img" src={g.urlImage} alt="Norway" />
         <div className="card-text">
           <h2>{g.name}</h2>
         </div>
@@ -119,7 +119,7 @@ class AllSites extends React.Component {
 
     return filteredSite.map((g, i) => (
       <div key={i}>
-        <div className="card-detail-img">
+        <div className="card-detail-img" style={{"background": "url("+g.urlImage+")"}}>
         </div>
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
