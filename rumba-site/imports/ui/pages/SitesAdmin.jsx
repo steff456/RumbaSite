@@ -28,18 +28,22 @@ class SitesAdmin extends React.Component {
       showSite: null,
       showDelete: false,
       showEdit: false,
-      name:'',
-      address:'',
-      urlImage:'',
-      disableButton:true
+      showNew:false,
+      name: '',
+      address: '',
+      urlImage: '',
+      disableButton: true
     }
 
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
+    this.showModalNew = this.showModalNew.bind(this);
+    this.hideModalNew = this.hideModalNew.bind(this);
     this.showModalDelete = this.showModalDelete.bind(this);
     this.hideModalDelete = this.hideModalDelete.bind(this);
     this.showOneSite = this.showOneSite.bind(this);
     this.delete = this.delete.bind(this);
+    this.create = this.create.bind(this);
     this.update = this.update.bind(this);
     this.updateName = this.updateName.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
@@ -53,6 +57,14 @@ class SitesAdmin extends React.Component {
 
   hideModal = () => {
     this.setState({ showEdit: false });
+  };
+
+  showModalNew = () => {
+    this.setState({ showNew: true });
+  };
+
+  hideModalNew = () => {
+    this.setState({ showNew: false });
   };
 
   showModalDelete = () => {
@@ -74,20 +86,37 @@ class SitesAdmin extends React.Component {
     this.setState({
       showSite: null
     });
+
+    this.hideModalDelete();
+  }
+
+  create(){
+    Meteor.call('sites.new', 
+      this.state.name, 
+      this.state.address, 
+      this.state.urlImage,
+      (err, site) => {
+        if (err) {
+          alert(err);
+          return;
+        }
+      }
+    );
+    this.hideModalNew();
   }
 
   update() {
-    Meteor.call('sites.update', 
-    this.state.showSite,
-    this.state.name,
-    this.state.address,
-    this.state.urlImage,
-    (err, site) => {
-      if (err) {
-        alert(err);
-        return;
-      }
-    });
+    Meteor.call('sites.update',
+      this.state.showSite,
+      this.state.name,
+      this.state.address,
+      this.state.urlImage,
+      (err, site) => {
+        if (err) {
+          alert(err);
+          return;
+        }
+      });
     this.hideModal();
   }
 
@@ -119,16 +148,6 @@ class SitesAdmin extends React.Component {
           color2={'#ffd700'} />
       </div>
     ));
-  }
-
-  updateDisable(){
-    let dis = false;
-    if(this.state.name === '' || this.state.name === ''||this.state.urlImage === ''){
-      dis = true;
-    }
-    this.setState({
-      disableButton: dis
-    });
   }
 
   updateSearch(event) {
@@ -164,7 +183,7 @@ class SitesAdmin extends React.Component {
 
     return filteredSite.map((g, i) => (
       <div key={i}>
-        <div className="card-detail-img" style={{"background": "url("+g.urlImage+")"}}>
+        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + ")" }}>
         </div>
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
@@ -195,16 +214,16 @@ class SitesAdmin extends React.Component {
             <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={this.update}>
               <p className="padding-text">Edit site</p>
               <div className="edit-element">
-                <div className="edit-element-text">Name</div>  
-                <input type="text" defaultValue={g.name} onChange={this.updateName}/>
+                <div className="edit-element-text">Name</div>
+                <input type="text" defaultValue={g.name} onChange={this.updateName} />
               </div>
               <div className="edit-element">
                 <div className="edit-element-text">Address</div>
-                <input type="text" defaultValue={g.address} onChange={this.updateAddress}/>
+                <input type="text" defaultValue={g.address} onChange={this.updateAddress} />
               </div>
               <div className="edit-element">
                 <div className="edit-element-text">URL image</div>
-                <input type="text" defaultValue={g.urlImage} onChange={this.updateUrlImage}/>
+                <input type="text" defaultValue={g.urlImage} onChange={this.updateUrlImage} />
               </div>
             </Modal>
             <div className="add-comment edit" onClick={this.showModal}>
@@ -216,25 +235,25 @@ class SitesAdmin extends React.Component {
     ));
   }
 
-  updateState(name, address, urlImage){
+  updateState(name, address, urlImage) {
     this.setState({
       name, address, urlImage
     });
   }
 
-  updateName(evt){
+  updateName(evt) {
     this.setState({
       name: evt.target.value
     });
   }
 
-  updateAddress(evt){
+  updateAddress(evt) {
     this.setState({
       address: evt.target.value
     });
   }
 
-  updateUrlImage(evt){
+  updateUrlImage(evt) {
     this.setState({
       urlImage: evt.target.value
     });
@@ -262,6 +281,25 @@ class SitesAdmin extends React.Component {
                 value={this.state.search}
                 onChange={this.updateSearch.bind(this)}
                 placeholder="Search site" />
+
+              <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={this.create}>
+                <p className="padding-text">New site</p>
+                <div className="edit-element">
+                  <div className="edit-element-text">Name</div>
+                  <input type="text" defaultValue="Name" onChange={this.updateName} />
+                </div>
+                <div className="edit-element">
+                  <div className="edit-element-text">Address</div>
+                  <input type="text" defaultValue="Address" onChange={this.updateAddress} />
+                </div>
+                <div className="edit-element">
+                  <div className="edit-element-text">URL image</div>
+                  <input type="text" defaultValue="https://" onChange={this.updateUrlImage} />
+                </div>
+              </Modal>
+              <div className="add-comment edit" onClick={this.showModalNew}>
+                Add new site
+              </div>
             </div>
             <div className="cards">
               {this.renderSites()}

@@ -65,5 +65,22 @@ Meteor.methods({
 
         const site2 = Sites.findOne({ id_site });
         return site2;
+    },
+    'sites.new':function(name, address, urlImage){
+        const id = Meteor.userId();
+        if (!id) {
+            throw new Meteor.Error('Not authorized');
+        }
+
+        const _id = new Mongo.ObjectID();
+        Sites.insert({
+            _id,
+            name,
+            address,
+            urlImage,
+            raiting: 5,
+            comments:[],
+            owner: Meteor.user().username
+        });
     }
 });
