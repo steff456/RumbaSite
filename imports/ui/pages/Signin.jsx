@@ -45,7 +45,7 @@ class Signin extends React.Component {
     })
     const { redirectToReferer } = this.state
     if (redirectToReferer) {
-      return <Redirect to={from} />
+      return <Redirect to='/' />
     }
   }
 
@@ -56,7 +56,7 @@ class Signin extends React.Component {
     const { from } = location.state || { from: { pathname: '/' } }
     // if correct authentication, redirect to page instead of login screen
     if (redirectToReferer) {
-      return <Redirect to={from} />
+      return <Redirect to='/' />
     }
 
     return (
