@@ -21,6 +21,11 @@ const Modal = ({ handleClose, ok, show, children }) => {
   );
 };
 
+/** Seria bueno que un administrador no pudiera añadir un nuevo sitio sin llenar todos los campos requeridos del sitio ( nombre , direccion y imagen )
+*
+* Tambien considero que seria bueno mostrar aletas al momento de la adicion del nuevo sitio como para que uno de admin sepa si el sitio fue agregado correctamente 
+* esto igualmente cuando se va a editar un sitio.
+*/
 
 class SitesAdmin extends React.Component {
 
