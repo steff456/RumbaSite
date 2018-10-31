@@ -1,5 +1,9 @@
 // Add "required" on input tags for not allowing empty fields
 
+// Create the modals as differente components for having a more modular web app
+
+// Add significant colors to the buttons such as "green" and "red"
+
 import React from 'react'
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
