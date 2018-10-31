@@ -10,6 +10,8 @@ import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import styled from 'styled-components';
+// 1
+//import { withRouter } from 'react-router';
 
 const ErrorMessage = styled(Message)`
   width: 100% !important;
@@ -29,6 +31,7 @@ class Signup extends React.Component {
 
   // Using a ref is accessing the DOM directly and not preferred
   // The React way to get the value from an input is using onChange
+    
   handleChange(e, { name, value }) {
     this.setState({ [name]: value })
   }
@@ -40,6 +43,11 @@ class Signup extends React.Component {
       if (err) {
         this.setState({ error: err.reason })
       } else {
+        // When the user is created. Redirect the user using withRouter() and the code that I added commented:
+        
+        // 2
+        // this.props.history.push('/login');
+        
         // browserHistory.push('/login');
       }
     });
@@ -97,6 +105,9 @@ class Signup extends React.Component {
     )
   }
 }
+
+// 3
+// Signup = withRouter(Signup);
 
 export default withTracker(() => {
   return {
