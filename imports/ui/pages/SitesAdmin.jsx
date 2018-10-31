@@ -1,3 +1,5 @@
+// Add "required" on input tags for not allowing empty fields
+
 import React from 'react'
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -308,15 +310,15 @@ class SitesAdmin extends React.Component {
                 <Form>
                   <Form.Field className="edit-element">
                     <label>Site Name</label>
-                    <Input type="text" placeholder="Name" onChange={this.updateName} />
+                    <Input type="text" placeholder="Name" onChange={this.updateName} required />
                   </Form.Field>
                   <Form.Field className="edit-element">
                     <label>Site Address</label>
-                    <Input type="text" placeholder="Address" onChange={this.updateAddress} />
+                    <Input type="text" placeholder="Address" onChange={this.updateAddress} required />
                   </Form.Field>
                   <Form.Field className="edit-element">
                     <label>URL Image</label>
-                    <Input type="text" label="https://" placeholder="URL image" onChange={this.updateUrlImage} />
+                    <Input type="text" label="https://" placeholder="URL image" onChange={this.updateUrlImage} required />
                   </Form.Field>
                 </Form>
               </Modal>
