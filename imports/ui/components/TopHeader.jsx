@@ -51,7 +51,7 @@ TopHeader.defaultProps = { currentUser: '', currentRole: ''}
 const TopHeaderContainer = withTracker(() => (
   { 
     currentUser: Meteor.user() ? Meteor.user().username : '',
-    currentRole: Meteor.user() ? Meteor.user().roles[0] : ''
+    currentRole: (Meteor.user() && Meteor.user().roles) ? Meteor.user().roles[0] : ''
   }
 ))(TopHeader)
 
