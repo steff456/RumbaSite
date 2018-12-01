@@ -3,19 +3,16 @@ import ReactStars from 'react-stars';
 
 class RenderSites extends Component {
 
-    renderSites() {
-        let filteredSites = this.props.sites.filter(
+    filteredSites(){
+        return this.props.sites.filter(
             (site) => {
             return site.name.toLowerCase().indexOf(
                 this.props.search.toLowerCase()) !== -1;
             }
-        );
+        );            
+    }
 
-        if (filteredSites.length === 0) {
-            return (<div className="error"><h3>¡Ups! We couldn't find sites where you are owner</h3></div>)
-        }
-
-
+    renderSites(filteredSites) {        
         return filteredSites.map((g, i) => (
             <div className="card" key={i} onClick={() => this.props.showOneSite(g._id)}>
             <img onError={(e)=>{e.target.onerror = null; e.target.src="https://media-cdn.tripadvisor.com/media/photo-s/08/2c/a7/13/cloud-9-sky-bar-lounge.jpg"}}
@@ -33,11 +30,20 @@ class RenderSites extends Component {
             </div>
         ));
     }
+
     render() {
+        let filteredSites = this.filteredSites();
         return (
-            <div className="cards">
-                {this.renderSites()}
-            </div>
+            <div>
+            {
+               filteredSites.length === 0 ?
+               (<div className="noSitesError"><h3>¡Ups! There are not sites</h3></div>)
+               :
+                (<div className="cards">
+                    {this.renderSites(filteredSites)}
+                </div>)    
+            } 
+            </div>           
         );
     }
 }

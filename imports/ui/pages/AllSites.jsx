@@ -194,10 +194,8 @@ class AllSites extends React.Component {
                 value={this.state.search}
                 onChange={this.updateSearch.bind(this)}
                 placeholder="Search site" />
-            </div>
-            <div className="cards">
-              {this.renderSites()}
-            </div>
+            </div>            
+            {this.renderSites()}      
           </div>)
         }
       </div>

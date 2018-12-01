@@ -313,6 +313,7 @@ class SitesAdmin extends React.Component {
     reader.readAsDataURL(myInput.files[0]);
   }
 
+
   render() {
     return (
       <div>
@@ -354,9 +355,11 @@ class SitesAdmin extends React.Component {
               <div className="add-comment edit" onClick={this.showModalNew}>
                 Add new site
               </div>
-            </div>           
+            </div> 
             {this.renderSites()}            
-          </div>)
+          </div>
+          
+          )
         }
       </div>
     );
