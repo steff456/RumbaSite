@@ -221,7 +221,7 @@ class SitesAdmin extends React.Component {
               </Form.Field>
               <Form.Field className="edit-element">
                 <label>URL Image</label>
-                <Input type="file" id="imgInputEdit" onChange={()=> this.onChangeImgFile('Edit')}/>
+                <Input type="file" id="imgInputEdit" onChange={()=> this.onChangeImgFile('Edit')}  accept="image/*"/>
               </Form.Field>
             </Form>
             </Modal>
@@ -348,7 +348,7 @@ class SitesAdmin extends React.Component {
                   </Form.Field>
                   <Form.Field className="edit-element">
                     <label>URL Image</label>
-                    <Input type="file" id="imgInputAdd" onChange={()=> this.onChangeImgFile('Add')}/>
+                    <Input type="file" id="imgInputAdd" onChange={()=> this.onChangeImgFile('Add') }  accept="image/*"/>
                   </Form.Field>                  
                 </Form>
               </Modal>
