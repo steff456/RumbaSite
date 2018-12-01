@@ -35,7 +35,7 @@ class RenderSites extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="cards">
                 {this.renderSites()}
             </div>
         );

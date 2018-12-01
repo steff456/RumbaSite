@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import ReactStars from 'react-stars'
 import { Header, Input, Form, Button, Divider } from 'semantic-ui-react';
 import  RenderSites  from '../components/RenderSites';
+import CryptoJS from 'crypto-js';
+import axios from 'axios';
 
 const Modal = ({ handleClose, ok, show, children }) => {
   return (
@@ -37,6 +39,7 @@ class SitesAdmin extends React.Component {
       name: '',
       address: '',
       urlImage: '',
+      imgFile:null,
       disableButton: true
     }
 
@@ -54,6 +57,10 @@ class SitesAdmin extends React.Component {
     this.updateAddress = this.updateAddress.bind(this);
     this.updateUrlImage = this.updateUrlImage.bind(this);
     this.updateState = this.updateState.bind(this);
+
+    this.onChangeImgFile = this.onChangeImgFile.bind(this);
+    this.changeImgFileState = this.changeImgFileState.bind(this);
+    this.postToCloud = this.postToCloud.bind(this);
   }
 
   showModal = () => {
@@ -80,7 +87,9 @@ class SitesAdmin extends React.Component {
     this.setState({ showDelete: false });
   };
 
-  delete() {
+  delete(evt) {
+    evt.preventDefault();
+
     Meteor.call('sites.delete', this.state.showSite, (err, site) => {
       if (err) {
         alert(err);
@@ -95,11 +104,11 @@ class SitesAdmin extends React.Component {
     this.hideModalDelete();
   }
 
-  create(){
+  create(imgUrl){
     Meteor.call('sites.new', 
       this.state.name, 
       this.state.address, 
-      this.state.urlImage,
+      imgUrl,
       (err, site) => {
         if (err) {
           alert(err);
@@ -110,12 +119,12 @@ class SitesAdmin extends React.Component {
     this.hideModalNew();
   }
 
-  update() {
+  update(imgUrl) {
     Meteor.call('sites.update',
       this.state.showSite,
       this.state.name,
       this.state.address,
-      this.state.urlImage,
+      imgUrl,
       (err, site) => {
         if (err) {
           alert(err);
@@ -146,6 +155,7 @@ class SitesAdmin extends React.Component {
       </div>
     ));
   }
+
 
   renderSite() {
     let filteredSite = this.props.sites.filter(
@@ -191,7 +201,7 @@ class SitesAdmin extends React.Component {
             <div className="delete" onClick={this.showModalDelete}>
               Delete
             </div>
-            <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={this.update}>
+            <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={()=>this.postToCloud('Edit')}>
               <Header 
               as='h2' 
               className="padding-text" 
@@ -211,7 +221,7 @@ class SitesAdmin extends React.Component {
               </Form.Field>
               <Form.Field className="edit-element">
                 <label>URL Image</label>
-                <Input type="text" defaultValue={g.urlImage} label="https://" placeholder={g.urlImage} onChange={this.updateUrlImage} />
+                <Input type="file" id="imgInputEdit" onChange={()=> this.onChangeImgFile('Edit')}/>
               </Form.Field>
             </Form>
             </Modal>
@@ -254,7 +264,53 @@ class SitesAdmin extends React.Component {
     }
     this.setState({
       showSite: id,
+    }); 
+  }
+
+  postToCloud(name){
+      let df = new FormData();
+      let timestamp =  + new Date();
+      let signature = 'timestamp=' + timestamp + Meteor.settings.public.stripe.SECRET_CLOUDINARY;
+      df.set('file', this.state.imgFile);
+      df.set('api_key', Meteor.settings.public.stripe.API_KEY_CLOUDINARY);
+      df.set('timestamp', timestamp );
+      df.set('signature', CryptoJS.SHA1(signature));
+
+      axios({
+        method: 'post',
+        url: 'https://api.cloudinary.com/v1_1/uniandes/image/upload',
+        data: df,
+        config: { headers: {'Content-Type': 'multipart/form-data' }}
+        })
+        .then(function (response) {   
+          if(name === 'Add')
+            this.create(response.data.secure_url);  
+          else
+            this.update(response.data.secure_url)
+        }.bind(this))
+        .catch(function (response) {
+            console.log(response);
+       });
+  }
+
+  changeImgFileState(file){
+    this.setState({
+      imgFile: file
     });
+  }
+
+  onChangeImgFile(name){
+    var reader = new FileReader();
+    reader.changeImgFileState = this.changeImgFileState;
+    reader.onload = function() {
+      var arrayBuffer = this.result,
+      array = new Uint8Array(arrayBuffer)
+    }
+    reader.onloadend = function(){
+      this.changeImgFileState(reader.result);
+    }
+    let myInput = document.getElementById('imgInput'+ name);
+    reader.readAsDataURL(myInput.files[0]);
   }
 
   render() {
@@ -271,7 +327,7 @@ class SitesAdmin extends React.Component {
                 onChange={this.updateSearch.bind(this)}
                 placeholder="Search site" />
 
-              <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={this.create}>
+              <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={()=> this.postToCloud('Add')}>
                 <Header 
                   as='h2' 
                   className="padding-text" 
@@ -291,17 +347,15 @@ class SitesAdmin extends React.Component {
                   </Form.Field>
                   <Form.Field className="edit-element">
                     <label>URL Image</label>
-                    <Input type="text" label="https://" placeholder="URL image" onChange={this.updateUrlImage} />
-                  </Form.Field>
+                    <Input type="file" id="imgInputAdd" onChange={()=> this.onChangeImgFile('Add')}/>
+                  </Form.Field>                  
                 </Form>
               </Modal>
               <div className="add-comment edit" onClick={this.showModalNew}>
                 Add new site
               </div>
-            </div>
-            <div className="cards">
-              {this.renderSites()}
-            </div>
+            </div>           
+            {this.renderSites()}            
           </div>)
         }
       </div>
