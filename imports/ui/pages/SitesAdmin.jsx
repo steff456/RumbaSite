@@ -5,21 +5,26 @@ import { Sites } from '../../api/sites.js'
 import PropTypes from 'prop-types';
 import ReactStars from 'react-stars'
 import { Header, Input, Form, Button, Divider } from 'semantic-ui-react';
+import  RenderSites  from '../components/RenderSites';
+import CryptoJS from 'crypto-js';
+import axios from 'axios';
 
-const Modal = ({ handleClose, ok, show, children }) => {
+const Modal = ({ handleClose, ok, show, children, name,address, img }) => {
   return (
     <div className={show ? "modal display-block" : "modal display-none"}>
       <section className="modal-main">
         {children}
         <Form>
             <Divider />
-            <Button onClick={ok}>Ok</Button>
+            <Button onClick={ok} disabled={name===''|| address==='' || img=== null}>Ok</Button>
             <Button onClick={handleClose}>Cancel</Button>
         </Form>
       </section>
     </div>
   );
 };
+
+const imgOnError = 'https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg'
 
 
 class SitesAdmin extends React.Component {
@@ -35,7 +40,7 @@ class SitesAdmin extends React.Component {
       showNew:false,
       name: '',
       address: '',
-      urlImage: '',
+      imgFile:null,
       disableButton: true
     }
 
@@ -51,12 +56,15 @@ class SitesAdmin extends React.Component {
     this.update = this.update.bind(this);
     this.updateName = this.updateName.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
-    this.updateUrlImage = this.updateUrlImage.bind(this);
-    this.updateState = this.updateState.bind(this);
+    this.onChangeImgFile = this.onChangeImgFile.bind(this);
+    this.changeImgFileState = this.changeImgFileState.bind(this);
+    this.postToCloud = this.postToCloud.bind(this);
   }
 
   showModal = () => {
-    this.setState({ showEdit: true });
+    this.setState({ 
+      showEdit: true    
+    });
   };
 
   hideModal = () => {
@@ -79,7 +87,9 @@ class SitesAdmin extends React.Component {
     this.setState({ showDelete: false });
   };
 
-  delete() {
+  delete(evt) {
+    evt.preventDefault();
+
     Meteor.call('sites.delete', this.state.showSite, (err, site) => {
       if (err) {
         alert(err);
@@ -88,17 +98,20 @@ class SitesAdmin extends React.Component {
     });
 
     this.setState({
-      showSite: null
+      showSite: null,
+      name:'',
+      address:'',
+      imgFile:null      
     });
 
     this.hideModalDelete();
   }
 
-  create(){
+  create(imgUrl){
     Meteor.call('sites.new', 
       this.state.name, 
       this.state.address, 
-      this.state.urlImage,
+      imgUrl,
       (err, site) => {
         if (err) {
           alert(err);
@@ -109,12 +122,12 @@ class SitesAdmin extends React.Component {
     this.hideModalNew();
   }
 
-  update() {
+  update(imgUrl) {
     Meteor.call('sites.update',
       this.state.showSite,
       this.state.name,
       this.state.address,
-      this.state.urlImage,
+      imgUrl,
       (err, site) => {
         if (err) {
           alert(err);
@@ -122,37 +135,6 @@ class SitesAdmin extends React.Component {
         }
       });
     this.hideModal();
-  }
-
-  renderSites() {
-    let filteredSites = this.props.sites.filter(
-      (site) => {
-        return site.name.toLowerCase().indexOf(
-          this.state.search.toLowerCase()) !== -1;
-      }
-    );
-
-    if (filteredSites.length === 0) {
-      return (<div className="error"><h3>¡Ups! We couldn't find sites where you are owner</h3></div>)
-    }
-
-
-    return filteredSites.map((g, i) => (
-      <div className="card" key={i} onClick={() => this.showOneSite(g._id)}>
-        <img onError={(e)=>{e.target.onerror = null; e.target.src="https://media-cdn.tripadvisor.com/media/photo-s/08/2c/a7/13/cloud-9-sky-bar-lounge.jpg"}}
-         className="card-img" src={g.urlImage} alt="Norway" />
-        <div className="card-text">
-          <h2>{g.name}</h2>
-        </div>
-        <ReactStars
-          className="card-starts"
-          count={5}
-          size={20}
-          edit={false}
-          value={g.raiting}
-          color2={'#ffd700'} />
-      </div>
-    ));
   }
 
   updateSearch(event) {
@@ -172,6 +154,7 @@ class SitesAdmin extends React.Component {
     ));
   }
 
+
   renderSite() {
     let filteredSite = this.props.sites.filter(
       (site) => {
@@ -182,13 +165,16 @@ class SitesAdmin extends React.Component {
     if (filteredSite.length === 0) {
       this.setState({
         showSite: null,
+        name:'',
+        address:'',
+        imgFile:null
       });
       return (<div></div>)
     }
 
     return filteredSite.map((g, i) => (
       <div key={i}>
-        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg)" }}>
+        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url("+ imgOnError +")" }}>
         </div>
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
@@ -216,7 +202,7 @@ class SitesAdmin extends React.Component {
             <div className="delete" onClick={this.showModalDelete}>
               Delete
             </div>
-            <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={this.update}>
+            <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={()=>this.postToCloud('Edit')} >
               <Header 
               as='h2' 
               className="padding-text" 
@@ -236,7 +222,7 @@ class SitesAdmin extends React.Component {
               </Form.Field>
               <Form.Field className="edit-element">
                 <label>URL Image</label>
-                <Input type="text" defaultValue={g.urlImage} label="https://" placeholder={g.urlImage} onChange={this.updateUrlImage} />
+                <Input type="file" id="imgInputEdit" onChange={()=> this.onChangeImgFile('Edit')}  accept="image/*"/>
               </Form.Field>
             </Form>
             </Modal>
@@ -247,12 +233,6 @@ class SitesAdmin extends React.Component {
         </div>
       </div>
     ));
-  }
-
-  updateState(name, address, urlImage) {
-    this.setState({
-      name, address, urlImage
-    });
   }
 
   updateName(evt) {
@@ -267,20 +247,73 @@ class SitesAdmin extends React.Component {
     });
   }
 
-  updateUrlImage(evt) {
-    this.setState({
-      urlImage: evt.target.value
-    });
-  }
-
   showOneSite(id) {
     if (id !== null) {
       id = id._str;
     }
     this.setState({
       showSite: id,
+    }); 
+  }
+
+  postToCloud(name){
+    if(this.state.imgFile !== null){
+      let df = new FormData();
+      let timestamp =  + new Date();
+      let signature = 'timestamp=' + timestamp + Meteor.settings.public.stripe.SECRET_CLOUDINARY;
+      df.set('file', this.state.imgFile);
+      df.set('api_key', Meteor.settings.public.stripe.API_KEY_CLOUDINARY);
+      df.set('timestamp', timestamp );
+      df.set('signature', CryptoJS.SHA1(signature));
+
+      axios({
+        method: 'post',
+        url: 'https://api.cloudinary.com/v1_1/uniandes/image/upload',
+        data: df,
+        config: { headers: {'Content-Type': 'multipart/form-data' }}
+        })
+        .then(function (response) {   
+          if(name === 'Add')
+            this.create(response.data.secure_url);  
+          else
+            this.update(response.data.secure_url)
+          
+          this.setState({
+            imgFile: null
+          });
+        }.bind(this))
+        .catch(function (response) {
+            console.log(response);
+       });
+      }
+      else{
+        if(name === 'Add')
+         this.create(imgOnError);  
+        else
+          this.update(imgOnError);
+      }
+  }
+
+  changeImgFileState(file){
+    this.setState({
+      imgFile: file
     });
   }
+
+  onChangeImgFile(name){
+    var reader = new FileReader();
+    reader.changeImgFileState = this.changeImgFileState;
+    reader.onload = function() {
+      var arrayBuffer = this.result,
+      array = new Uint8Array(arrayBuffer)
+    }
+    reader.onloadend = function(){
+      this.changeImgFileState(reader.result);
+    }
+    let myInput = document.getElementById('imgInput'+ name);
+    reader.readAsDataURL(myInput.files[0]);
+  }
+
 
   render() {
     return (
@@ -296,7 +329,7 @@ class SitesAdmin extends React.Component {
                 onChange={this.updateSearch.bind(this)}
                 placeholder="Search site" />
 
-              <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={this.create}>
+              <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={()=> this.postToCloud('Add')} name={this.state.name} address={this.state.address} img={this.setState.imgFile}>
                 <Header 
                   as='h2' 
                   className="padding-text" 
@@ -315,19 +348,20 @@ class SitesAdmin extends React.Component {
                     <Input type="text" placeholder="Address" onChange={this.updateAddress} />
                   </Form.Field>
                   <Form.Field className="edit-element">
-                    <label>URL Image</label>
-                    <Input type="text" label="https://" placeholder="URL image" onChange={this.updateUrlImage} />
-                  </Form.Field>
+                    <label>URL Image (Optional)</label>
+                    <Input type="file" id="imgInputAdd" onChange={()=> this.onChangeImgFile('Add') }  accept="image/*"/>
+                  </Form.Field>                  
                 </Form>
               </Modal>
               <div className="add-comment edit" onClick={this.showModalNew}>
                 Add new site
               </div>
-            </div>
-            <div className="cards">
-              {this.renderSites()}
-            </div>
-          </div>)
+            </div> 
+
+            <RenderSites search={this.state.search} sites={this.props.sites} showOneSite={this.showOneSite}/>       
+          </div>
+          
+          )
         }
       </div>
     );
