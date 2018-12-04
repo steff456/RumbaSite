@@ -9,20 +9,22 @@ import  RenderSites  from '../components/RenderSites';
 import CryptoJS from 'crypto-js';
 import axios from 'axios';
 
-const Modal = ({ handleClose, ok, show, children }) => {
+const Modal = ({ handleClose, ok, show, children, name,address, img }) => {
   return (
     <div className={show ? "modal display-block" : "modal display-none"}>
       <section className="modal-main">
         {children}
         <Form>
             <Divider />
-            <Button onClick={ok}>Ok</Button>
+            <Button onClick={ok} disabled={name===''|| address==='' || img=== null}>Ok</Button>
             <Button onClick={handleClose}>Cancel</Button>
         </Form>
       </section>
     </div>
   );
 };
+
+const imgOnError = 'https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg'
 
 
 class SitesAdmin extends React.Component {
@@ -38,7 +40,6 @@ class SitesAdmin extends React.Component {
       showNew:false,
       name: '',
       address: '',
-      urlImage: '',
       imgFile:null,
       disableButton: true
     }
@@ -55,16 +56,15 @@ class SitesAdmin extends React.Component {
     this.update = this.update.bind(this);
     this.updateName = this.updateName.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
-    this.updateUrlImage = this.updateUrlImage.bind(this);
-    this.updateState = this.updateState.bind(this);
-
     this.onChangeImgFile = this.onChangeImgFile.bind(this);
     this.changeImgFileState = this.changeImgFileState.bind(this);
     this.postToCloud = this.postToCloud.bind(this);
   }
 
   showModal = () => {
-    this.setState({ showEdit: true });
+    this.setState({ 
+      showEdit: true    
+    });
   };
 
   hideModal = () => {
@@ -98,7 +98,10 @@ class SitesAdmin extends React.Component {
     });
 
     this.setState({
-      showSite: null
+      showSite: null,
+      name:'',
+      address:'',
+      imgFile:null      
     });
 
     this.hideModalDelete();
@@ -134,11 +137,6 @@ class SitesAdmin extends React.Component {
     this.hideModal();
   }
 
-  renderSites() {
-    return (<RenderSites search={this.state.search} sites={this.props.sites} showOneSite={this.showOneSite}/>)
-  }
-
-
   updateSearch(event) {
     this.setState({
       search: event.target.value.substr(0, 20)
@@ -167,13 +165,16 @@ class SitesAdmin extends React.Component {
     if (filteredSite.length === 0) {
       this.setState({
         showSite: null,
+        name:'',
+        address:'',
+        imgFile:null
       });
       return (<div></div>)
     }
 
     return filteredSite.map((g, i) => (
       <div key={i}>
-        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url(https://cdn-image.foodandwine.com/sites/default/files/1501607996/opentable-scenic-restaurants-marine-room-FT-BLOG0818.jpg)" }}>
+        <div className="card-detail-img" style={{ "background": "url(" + g.urlImage + "), url("+ imgOnError +")" }}>
         </div>
         <div className="card-detail">
           <div className="other-sites" onClick={() => this.showOneSite(null)}>
@@ -201,7 +202,7 @@ class SitesAdmin extends React.Component {
             <div className="delete" onClick={this.showModalDelete}>
               Delete
             </div>
-            <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={()=>this.postToCloud('Edit')}>
+            <Modal show={this.state.showEdit} handleClose={this.hideModal} ok={()=>this.postToCloud('Edit')} >
               <Header 
               as='h2' 
               className="padding-text" 
@@ -234,12 +235,6 @@ class SitesAdmin extends React.Component {
     ));
   }
 
-  updateState(name, address, urlImage) {
-    this.setState({
-      name, address, urlImage
-    });
-  }
-
   updateName(evt) {
     this.setState({
       name: evt.target.value
@@ -249,12 +244,6 @@ class SitesAdmin extends React.Component {
   updateAddress(evt) {
     this.setState({
       address: evt.target.value
-    });
-  }
-
-  updateUrlImage(evt) {
-    this.setState({
-      urlImage: evt.target.value
     });
   }
 
@@ -268,6 +257,7 @@ class SitesAdmin extends React.Component {
   }
 
   postToCloud(name){
+    if(this.state.imgFile !== null){
       let df = new FormData();
       let timestamp =  + new Date();
       let signature = 'timestamp=' + timestamp + Meteor.settings.public.stripe.SECRET_CLOUDINARY;
@@ -287,10 +277,21 @@ class SitesAdmin extends React.Component {
             this.create(response.data.secure_url);  
           else
             this.update(response.data.secure_url)
+          
+          this.setState({
+            imgFile: null
+          });
         }.bind(this))
         .catch(function (response) {
             console.log(response);
        });
+      }
+      else{
+        if(name === 'Add')
+         this.create(imgOnError);  
+        else
+          this.update(imgOnError);
+      }
   }
 
   changeImgFileState(file){
@@ -328,7 +329,7 @@ class SitesAdmin extends React.Component {
                 onChange={this.updateSearch.bind(this)}
                 placeholder="Search site" />
 
-              <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={()=> this.postToCloud('Add')}>
+              <Modal show={this.state.showNew} handleClose={this.hideModalNew} ok={()=> this.postToCloud('Add')} name={this.state.name} address={this.state.address} img={this.setState.imgFile}>
                 <Header 
                   as='h2' 
                   className="padding-text" 
@@ -347,7 +348,7 @@ class SitesAdmin extends React.Component {
                     <Input type="text" placeholder="Address" onChange={this.updateAddress} />
                   </Form.Field>
                   <Form.Field className="edit-element">
-                    <label>URL Image</label>
+                    <label>URL Image (Optional)</label>
                     <Input type="file" id="imgInputAdd" onChange={()=> this.onChangeImgFile('Add') }  accept="image/*"/>
                   </Form.Field>                  
                 </Form>
@@ -356,7 +357,8 @@ class SitesAdmin extends React.Component {
                 Add new site
               </div>
             </div> 
-            {this.renderSites()}            
+
+            <RenderSites search={this.state.search} sites={this.props.sites} showOneSite={this.showOneSite}/>       
           </div>
           
           )
