@@ -116,9 +116,14 @@ class SitesAdmin extends React.Component {
         if (err) {
           alert(err);
           return;
-        }
+        }       
       }
     );
+    this.setState({
+      name:'',
+      address:'',
+      imgFile:null      
+    });
     this.hideModalNew();
   }
 
@@ -147,11 +152,18 @@ class SitesAdmin extends React.Component {
     if (comments.length === 0) {
       return (<div className="error2"><h3>¡Ups! There are not comments yet</h3></div>)
     }
-    return comments.reverse().map((g, i) => (
+    let comm =  comments.reverse().map((g, i) => (      
       <div className="comment" key={i}>
         <h4>{g.user} :</h4> {g.comment}
       </div>
     ));
+
+    return (
+      <div>
+          <h5 className="comment-number">Number of comments: {comments.length}</h5>
+          {comm}
+      </div>
+    );
   }
 
 

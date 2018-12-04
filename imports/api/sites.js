@@ -73,7 +73,7 @@ Meteor.methods({
         }
 
         const _id = new Mongo.ObjectID();
-        Sites.insert({
+        const site = Sites.insert({
             _id,
             name,
             address,
@@ -82,5 +82,6 @@ Meteor.methods({
             comments:[],
             owner: Meteor.user().username
         });
+        return site;
     }
 });
