@@ -64,7 +64,7 @@ class Signin extends React.Component {
         <Grid textAlign="center" verticalAlign="middle" centered columns={2}>
           <Grid.Column>
             <Header as="h2" textAlign="center">
-              <Image src="/logo.png" /> Log-in to your account
+              <Image src="/logo.png" alt="logo" /> Log-in to your account
             </Header>
             <Segment stacked padded='very'>
               <Form onSubmit={this.handleSubmit}>

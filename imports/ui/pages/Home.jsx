@@ -22,7 +22,7 @@ const Home = () => (
   <Grid columns={1}>
     <MainGridRow>
       <MainGridColumn>
-        <Image src="/images/home-page.jpg" />
+        <Image src="/images/home-page.jpg" alt="home-page"/>
       </MainGridColumn>
     </MainGridRow>
   </Grid>

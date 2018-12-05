@@ -8,7 +8,7 @@ import { Menu, Dropdown, Image } from 'semantic-ui-react'
 const TopHeader = ({ currentUser, currentRole }) => (
   <Menu secondary pointing>
     <Menu.Item as={NavLink} activeClassName="active" exact to="/">
-      <Image src="/icon.png" size="tiny" />
+      <Image src="/icon.png" size="tiny" alt="icon" />
     </Menu.Item>
     {currentUser === '' && (
     <Menu.Item as={NavLink} activeClassName="active" exact to="/signin">

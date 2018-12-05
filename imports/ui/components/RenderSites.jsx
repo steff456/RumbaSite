@@ -16,7 +16,7 @@ class RenderSites extends Component {
         return filteredSites.map((g, i) => (
             <div className="card" key={i} onClick={() => this.props.showOneSite(g._id)}>
             <img onError={(e)=>{e.target.onerror = null; e.target.src="https://media-cdn.tripadvisor.com/media/photo-s/08/2c/a7/13/cloud-9-sky-bar-lounge.jpg"}}
-                className="card-img" src={g.urlImage} alt="Norway" />
+                className="card-img" src={g.urlImage} alt="Norway"  />
             <div className="card-text">
                 <h2>{g.name}</h2>
             </div>

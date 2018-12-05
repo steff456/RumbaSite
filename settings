@@ -1,0 +1,8 @@
+{
+    "public": {
+        "stripe": {
+            "SECRET_CLOUDINARY": "VdvAKDe_Fvs9JMpRfh_nCVp5DdA",
+            "API_KEY_CLOUDINARY": "281657626477963"
+        }
+    }
+}
