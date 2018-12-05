@@ -1,3 +1,4 @@
 node_modules/
 rumba-site/.meteor/local/
 settings.json
+package-lock.json
