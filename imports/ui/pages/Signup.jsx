@@ -4,7 +4,7 @@
 // login page overrides the form’s submit event and call Meteor’s loginWithPassword()
 // Authentication errors modify the component’s state to be displayed
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { Container, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
@@ -22,7 +22,7 @@ const options=[
 class Signup extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { email: '', password: '', error: '' }
+    this.state = { email: '', password: '', error: '', redirectToReferer:false }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
@@ -35,18 +35,23 @@ class Signup extends React.Component {
 
   handleSubmit() {
     const { email, password, role } = this.state;
-
     Accounts.createUser({ email, username: email, password, roles: [role] }, (err) => {
       if (err) {
         this.setState({ error: err.reason })
       } else {
-        // browserHistory.push('/login');
+        // browserHistory.push('/');
+        this.setState({ redirectToReferer: true })
+        console.log(this.props.currentUser)
+        console.log(this.state.redirectToReferer)
       }
     });
   }
 
   render() {
-    const { error } = this.state
+    const { error, redirectToReferer } = this.state
+    if (redirectToReferer) {
+      return <Redirect to='/' />
+    }
     return (
       <Container>
         <Grid textAlign="center" verticalAlign="middle" centered columns={2}>
