@@ -8,7 +8,7 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-    'sites.comment.add': function (id_site, comments, raiting) {
+    'sites.comment.add': function (id_site, comment, raiting) { //se puede hacer push del comentario directamente de mongo
         const id = Meteor.userId();
         if (!id) {
             throw new Meteor.Error('Not authorized');
@@ -19,12 +19,14 @@ Meteor.methods({
             { _id: id_site },
             {
                 $set: {
-                    comments,
                     raiting
+                },
+                $push: {
+                    comments: comment
                 }
             }
         );
-
+        
         const site = Sites.findOne({ id_site });
         return site;
     },
@@ -62,7 +64,7 @@ Meteor.methods({
                 }
             }
         );
-
+        
         const site2 = Sites.findOne({ id_site });
         return site2;
     },
