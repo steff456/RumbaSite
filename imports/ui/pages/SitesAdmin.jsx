@@ -9,6 +9,8 @@ import  RenderSites  from '../components/RenderSites';
 import CryptoJS from 'crypto-js';
 import axios from 'axios';
 
+//Aquí hay un serio problema de mantenibilidad, el código debería estar más modularizado.
+
 const Modal = ({ handleClose, ok, show, children, name,address, img }) => {
   return (
     <div className={show ? "modal display-block" : "modal display-none"}>

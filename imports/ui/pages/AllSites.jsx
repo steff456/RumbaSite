@@ -9,7 +9,7 @@ import { Header, Form, Button, Divider, Input } from 'semantic-ui-react';
 import  RenderSites  from '../components/RenderSites';
 
 const role = Roles.userIsInRole(Meteor.user(), ['client'])
-
+//Deberían modularizar más el código, por ejemplo, este archivo se podría separar en 3 distintos
 const Modal = ({ handleClose, handleAdd, show, children, disabledB }) => {
   return (
     <div className={show ? "modal display-block" : "modal display-none"}>
@@ -24,7 +24,7 @@ const Modal = ({ handleClose, handleAdd, show, children, disabledB }) => {
     </div>
   );
 };
-
+//El componente de AllSites deberían ser 2: uno que renderice la lista de sitios y otro que renderice el detalle de ellos. El Router también debería cambiar para poder hacer este cambio.
 class AllSites extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +36,7 @@ class AllSites extends React.Component {
       commentRaiting: 0
     }
     this.starsRef = React.createRef();
-
+    //Personalmente, no me gusta hacer los binds, prefiero usar arrow functions.
     this.showOneSite = this.showOneSite.bind(this);
     this.showModal = this.showModal.bind(this);
     this.changeRat = this.changeRat.bind(this);
@@ -52,7 +52,7 @@ class AllSites extends React.Component {
     this.setState({ show: false });
   };
 
-  renderSites() {
+  renderSites() {//e.g. showOneSite={(id) => this.showOneSite(id)}, esto ya hace el bind
       return (<RenderSites search={this.state.search} sites={this.props.sites} showOneSite={this.showOneSite}/>)
   }
 
@@ -70,7 +70,7 @@ class AllSites extends React.Component {
       showSite: id,
     });
   }
-
+  //Por algún motivo, cuando yo 
   renderComments(comments) {
     if (comments.length === 0) {
       return (<div className="error2"><h3>¡Ups! There are not comments yet</h3></div>)
@@ -170,13 +170,13 @@ class AllSites extends React.Component {
     let siteComments = sites[0].comments;
 
     let siteRaiting = ((sites[0].raiting * siteComments.length) + this.state.commentRaiting) / (siteComments.length + 1);
-    siteComments.push({
+    let comment = {
       user: this.props.currentUser.username,
       comment: this.state.comment,
       raiting: this.state.commentRaiting
-    });
-
-    Meteor.call('sites.comment.add', this.state.showSite, siteComments, siteRaiting, (err, site) => {
+    };
+    //Se puede hacer push del comentario directamente de mongo
+    Meteor.call('sites.comment.add', this.state.showSite, comment, siteRaiting, (err) => {
       if (err) {
         alert(err);
         return;

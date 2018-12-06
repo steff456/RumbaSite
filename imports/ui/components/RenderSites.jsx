@@ -12,9 +12,9 @@ class RenderSites extends Component {
         );            
     }
 
-    renderSites(filteredSites) {        
+    renderSites(filteredSites) { //poner como key el índice sólo si es estrictamente necesario, en este caso se puede con g._id
         return filteredSites.map((g, i) => (
-            <div className="card" key={i} onClick={() => this.props.showOneSite(g._id)}>
+            <div className="card" key={g._id} onClick={() => this.props.showOneSite(g._id)}>
             <img onError={(e)=>{e.target.onerror = null; e.target.src="https://media-cdn.tripadvisor.com/media/photo-s/08/2c/a7/13/cloud-9-sky-bar-lounge.jpg"}}
                 className="card-img" src={g.urlImage} alt="Norway"  />
             <div className="card-text">
@@ -47,5 +47,7 @@ class RenderSites extends Component {
         );
     }
 }
+
+//faltan los propTypes
 
 export default RenderSites;

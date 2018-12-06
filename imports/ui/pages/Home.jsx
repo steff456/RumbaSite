@@ -3,7 +3,7 @@ import { Image, Grid } from 'semantic-ui-react';
 import styled from 'styled-components';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-
+//Se debería dejar el css en otro archivo
 const MainGridRow = styled(Grid.Row)`
   padding: 0;
   padding-top: 0 !important;
