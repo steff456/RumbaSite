@@ -28,6 +28,7 @@ Meteor.startup(() => {
           <Route exact path="/" component={Home} />
           <Route path="/signin" component={Signin} />
           <Route path="/signup" component={Signup} />
+          
           <ProtectedRoute path="/sites-admin" component={SitesAdmin} />
           <ProtectedRoute path="/sites" component={AllSites} />
           <ProtectedRoute path="/account" component={Account} />
@@ -46,6 +47,13 @@ Meteor.startup(() => {
  * will check the Meteor login before routing to the requested page
  * @param {any} { component: Component, ...rest }
  */
+
+
+/**Usan este metodo para que evitar que gente que no este loggeada pueda acceder a las funcionalidades de la aplicacion, 
+* sin embargo deberian implementar un metodo AdminProtectedRoute para que una persona loggeada no acceda a las funcionalidades 
+* del admin , pude entrar a las funcionalidades de admin siendo usuario entrando desde un perfil usuario a este enlace
+* https://rumbas.herokuapp.com/sites-admin
+*/
 const ProtectedRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
